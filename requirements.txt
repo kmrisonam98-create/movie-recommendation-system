@@ -1,0 +1,12 @@
+#core api
+fastapi==0.111.0
+uvicorn==0.30.1
+python-dotenv==1.0.1
+httpx==0.27.0
+#data&ml(match pickle)
+pandas==2.2.2
+numpy==2.0.1
+scipy==1.13.1
+scikit-learn==1.5.1
+#frontend
+streamlit==1.36.0
