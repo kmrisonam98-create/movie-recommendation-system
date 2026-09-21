@@ -7,6 +7,6 @@ httpx==0.27.0
 pandas==2.2.2
 numpy==2.0.1
 scipy==1.13.1
-scikit-learn==1.5.1
+scikit-learn==1.6.1
 #frontend
 streamlit==1.36.0

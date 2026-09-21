@@ -34,7 +34,7 @@ if qp_id:
     try:
         st.session_state.selected_tmdb_id = int(qp_id)
         st.session_state.view = "details"
-    except:
+    except ValueError:
         pass
     
 def goto_home():
@@ -291,13 +291,9 @@ elif st.session_state.view == "details":
         st.markdown("</div>", unsafe_allow_html=True)
         
     with right:
-        st.markdown("</div class='card'>", unsafe_allow_html=True)
         st.markdown(f"## {data.get('title', '')}")
         release = data.get("release_date") or "-"
         genres = ",".join([g["name"] for g in data.get("genres", [])]) or "-"
-        st.markdown(
-            f"<div class='small-muted'>Genres: {genres}</div>", unsafe_allow_html=True
-        )               
         st.markdown(
             f"<div class='small-muted'>Genres: {genres}</div>", unsafe_allow_html=True
         )
@@ -321,7 +317,7 @@ elif st.session_state.view == "details":
             params={"query": title, "tfidf_top_n": 12, "genre_limit": 12},
         )
         
-        if not err and bundle:
+        if not err2 and bundle:
             st.markdown("#### 🔎 Similar Movies (TF-IDF)")
             poster_grid(
                 to_cards_from_tfidf_items(bundle.get("tfidf_recommendations")),

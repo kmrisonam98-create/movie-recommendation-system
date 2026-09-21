@@ -274,15 +274,13 @@ def load_pickles():
     
     if df is None or "title" not in df.columns:
         raise RuntimeError("df.pkl must contain a DataFrame with a 'title' column")
-    
-    
-    
-    @app.get("/health")
-    def health():
-        return {"status": "ok"}
-    
-    
-   
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
 @app.get("/home", response_model=List[TMDBMovieCard])
 async def home(
     category: str = Query("popular"),
