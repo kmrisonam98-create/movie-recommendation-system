@@ -159,7 +159,7 @@ async def tmdb_search_first(query: str) -> Optional[dict]:
     return results[0] if results else None
 
 
-# TF-IDF Helpers
+
 
 def build_title_to_idx_map(indices: Any) -> Dict[str, int]:
     """
@@ -175,13 +175,13 @@ def build_title_to_idx_map(indices: Any) -> Dict[str, int]:
             title_to_idx[_norm_title(k)] = int(v)
         return title_to_idx
 
-    # pandas Series or similar mapping
+    
     try:
         for k, v in indices.items():
             title_to_idx[_norm_title(k)] = int(v)
         return title_to_idx
     except Exception:
-        # last resort: if it's a list-like etc.
+        
         raise RuntimeError(
             "indices.pkl must be dict or pandas Series-like (with .items())"
         )
@@ -275,13 +275,13 @@ def load_pickles():
     if df is None or "title" not in df.columns:
         raise RuntimeError("df.pkl must contain a DataFrame with a 'title' column")
     
-    # routes
+    
     
     @app.get("/health")
     def health():
         return {"status": "ok"}
     
-    # Home feed(TMDB)
+    
    
 @app.get("/home", response_model=List[TMDBMovieCard])
 async def home(
@@ -311,7 +311,7 @@ async def home(
         raise HTTPException(status_code=500, detail=f"Home route failed: {e}")
     
     
-# keyword search
+
 
 @app.get("/tmdb/search")
 async def tmdb_search(
@@ -326,12 +326,12 @@ async def tmdb_search(
     """
     return await tmdb_search_movies(query=query, page=page)
 
-#movie details(safe route)
+
 @app.get("/movie/id/{tmdb_id}", response_model=TMDBMovieDetails)
 async def movie_details_route(tmdb_id: int):
     return await tmdb_movie_details(tmdb_id)
 
-# genre recommendations
+
 @app.get("/recommend/genre", response_model=List[TMDBMovieCard])
 async def recommend_genre(
     tmdb_id: int = Query(...),
@@ -360,7 +360,7 @@ async def recommend_genre(
     cards = await tmdb_cards_from_results(discover.get("results", []), limit=limit)
     return [c for c in cards if c.tmdb_id != tmdb_id]
 
-# details + tfidf rec+ genre recs
+
 @app.get("/movie/search", response_model=SearchBundleResponse)
 async def search_bundle(
     query: str = Query(..., min_length=1),
@@ -386,7 +386,7 @@ async def search_bundle(
     tmdb_id = int(best["id"])
     details = await tmdb_movie_details(tmdb_id)
 
-    # 1) TF-IDF recommendations (never crash endpoint)
+    
     tfidf_items: List[TFIDFRecItem] = []
 
     recs: List[Tuple[str, float]] = []

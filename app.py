@@ -355,10 +355,3 @@ elif st.session_state.view == "details":
                 
    
    
-   
-   
-       
-                
-            
-    
-    
