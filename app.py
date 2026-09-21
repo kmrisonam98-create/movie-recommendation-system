@@ -1,8 +1,50 @@
+import os
+import subprocess
+import sys
+import time
+
 import requests
 import streamlit as st
 
 
-API_BASE =  "http://127.0.0.1:8000"
+@st.cache_resource
+def configure_api_process():
+    api_base = os.getenv("API_BASE", "http://127.0.0.1:8000")
+    if api_base != "http://127.0.0.1:8000":
+        return api_base
+
+    try:
+        if "TMDB_API_KEY" in st.secrets:
+            os.environ.setdefault("TMDB_API_KEY", st.secrets["TMDB_API_KEY"])
+    except FileNotFoundError:
+        pass
+
+    process = subprocess.Popen(
+        [
+            sys.executable,
+            "-m",
+            "uvicorn",
+            "main:app",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            "8000",
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    for _ in range(20):
+        try:
+            if requests.get(f"{api_base}/health", timeout=1).ok:
+                return api_base
+        except requests.RequestException:
+            time.sleep(0.5)
+
+    process.terminate()
+    return api_base
+
+
+API_BASE = configure_api_process()
 TMDB_IMG = "https://image.tmdb.org/t/p/w500"
 
 st.set_page_config(page_title="Movie Recommender", page_icon="🎬", layout="wide")
